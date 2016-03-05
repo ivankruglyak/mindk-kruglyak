@@ -23,6 +23,7 @@ use Framework\Response\Response;
 class Application {
 
 	public function run(){
+
 		$router = new Router(include('../app/config/routes.php'));
 
 		$route =  $router->parseRoute();

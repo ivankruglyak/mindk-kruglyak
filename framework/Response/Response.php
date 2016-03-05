@@ -42,6 +42,7 @@ class Response {
 		$this->sendHeaders();
 		$this->sendBody();
 	}
+
 	public function setHeader($name, $value){
 		$this->headers[$name] = $value;
 	}

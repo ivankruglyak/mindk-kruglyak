@@ -14,28 +14,24 @@ class Router{
 
 	/**
 	 * Class construct
-	 *
-	 * Router constructor.
-	 * @param array $routing_map
 	 */
-	public function __construct($routing_map = array())
-	{
+	public function __construct($routing_map = array()){
+
 		self::$map = $routing_map;
 	}
 
 	/**
-	 * Parse Url
+	 * Parse URL
 	 *
-	 * @param string $url
-	 * @return null
+	 * @param $url
 	 */
-	public function parseRoute($url = '')
-	{
+	public function parseRoute($url = ''){
+
 		$url = empty($url) ? $_SERVER['REQUEST_URI'] : $url;
 
 		$route_found = null;
 
-		foreach (self::$map as $route){
+		foreach(self::$map as $route){
 
 			$pattern = $this->prepare($route);
 
@@ -43,12 +39,13 @@ class Router{
 
 				// Get assoc array of params:
 				preg_match($pattern, str_replace(array('{','}'), '', $route['pattern']), $param_names);
-                $params = array_map('urldecode', $params);
-                $params = array_combine($param_names, $params);
-                array_shift($params); // Get rid of 0 element
+				$params = array_map('urldecode', $params);
+				$params = array_combine($param_names, $params);
+				array_shift($params); // Get rid of 0 element
 
 				$route_found = $route;
 				$route_found['params'] = $params;
+
 				break;
 			}
 

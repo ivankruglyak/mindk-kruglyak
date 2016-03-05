@@ -6,12 +6,14 @@ class Loader
 {
     protected static $instance = null;
     protected static $namespaces = array();
+
     public static function getInstance(){
         if(empty(self::$instance)){
             self::$instance = new self();
         }
         return self::$instance;
     }
+
     private static function load($classname){
         // @TODO: Add here some registered $namespaces processing...
         $path = str_replace('Framework','',$classname);
@@ -20,10 +22,12 @@ class Loader
             include_once($path);
         }
     }
+
     private function __construct(){
         // Init
         spl_autoload_register(array(__CLASS__, 'load'));
     }
+
     private function __clone(){
         // lock
     }
