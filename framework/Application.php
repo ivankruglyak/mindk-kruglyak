@@ -34,6 +34,7 @@ class Application {
 		        $controllerReflection = new \ReflectionClass($route['controller']);
 		        $action = $route['action'] . 'Action';
 		        if($controllerReflection->hasMethod($action)){
+
 			        $controller = $controllerReflection->newInstance();
 			        $actionReflection = $controllerReflection->getMethod($action);
 			        $response = $actionReflection->invokeArgs($controller, $route['params']);
