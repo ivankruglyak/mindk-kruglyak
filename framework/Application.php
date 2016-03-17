@@ -1,7 +1,7 @@
 <?php
-/**    
+/**
  * Application.php
- * 
+ *
  * PHP version 5
  *
  * @category   Category Name
@@ -19,8 +19,13 @@ namespace Framework;
 use Framework\Router\Router;
 use Framework\Exception\HttpNotFoundException;
 use Framework\Response\Response;
+use Framework\Session\Session;
 
 class Application {
+
+	public function __construct($config){
+		Service::set(new Session());
+	}
 
 	public function run(){
 
@@ -34,6 +39,7 @@ class Application {
 		        $controllerReflection = new \ReflectionClass($route['controller']);
 		        $action = $route['action'] . 'Action';
 		        if($controllerReflection->hasMethod($action)){
+
 			        $controller = $controllerReflection->newInstance();
 			        $actionReflection = $controllerReflection->getMethod($action);
 			        $response = $actionReflection->invokeArgs($controller, $route['params']);
