@@ -15,9 +15,17 @@ class Loader
     }
 
     private static function load($classname){
-        // @TODO: Add here some registered $namespaces processing...
-        $path = str_replace('Framework','',$classname);
-        $path = __DIR__ . str_replace("\\","/", $path) . '.php';
+        $namespaces = self::$namespaces;
+        $expl = explode('\\', $classname);
+        foreach ($namespaces as $namespace => $nspath) {
+            if ($expl[0] . '\\' == $namespace) {
+                $reg_path = $nspath;
+                break;
+            }
+        }
+        $path = str_replace($expl[0],'',$classname);
+        $dir  = !empty($reg_path) ? $reg_path : __DIR__;
+        $path = $dir . str_replace("\\","/", $path) . '.php';
         if(file_exists($path)){
             include_once($path);
         }

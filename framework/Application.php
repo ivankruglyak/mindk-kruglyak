@@ -16,15 +16,25 @@
 namespace Framework;
 
 
+use Framework\Renderer\Renderer;
 use Framework\Router\Router;
 use Framework\Exception\HttpNotFoundException;
 use Framework\Response\Response;
 use Framework\Session\Session;
+use Framework\DI\Service;
 
 class Application {
 
 	public function __construct($config){
-		Service::set(new Session());
+		$config = new \ArrayObject(include $config, \ArrayObject::ARRAY_AS_PROPS);
+//		var_dump($config->pdo); die;
+        ini_set('xdebug.var_display_max_depth', -1);
+        ini_set('xdebug.var_display_max_children', -1);
+        ini_set('xdebug.var_display_max_data', -1);
+		Service::set('session', new Session());
+		Service::set('renderer', new Renderer('../src/Blog/layout.html.php'));
+		Service::set('db', new \PDO($config->pdo['dns'], $config->pdo['user'], $config->pdo['password']));
+//		var_dump(Service::get('db')); die;
 	}
 
 	public function run(){
@@ -41,6 +51,7 @@ class Application {
 		        if($controllerReflection->hasMethod($action)){
 
 			        $controller = $controllerReflection->newInstance();
+//					var_dump($controller); die;
 			        $actionReflection = $controllerReflection->getMethod($action);
 			        $response = $actionReflection->invokeArgs($controller, $route['params']);
 
@@ -59,7 +70,7 @@ class Application {
         }
         catch(AuthRequredException $e){
 	    	// Reroute to login page
-	        //$response = new RedirectResponse(...);
+	        //response = new RedirectResponse(...);
         }
         catch(\Exception $e){
 	        // Do 500 layout...

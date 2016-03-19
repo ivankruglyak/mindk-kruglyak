@@ -19,21 +19,37 @@ namespace Framework\Session;
 
 class Session {
 
-	public $messages = [];
-
 	public function __construct(){
 		session_start();
+//		if (!array_key_exists('messages', $_SESSION)) {
+//			$_SESSION['messages'] = array('info'=>array(), 'error'=>array(), 'success'=>array());
+//		}
 	}
 
 	public function __set($name, $val){
-
+		$_SESSION[$name] = $val;
 	}
 
-	public function __get($name){
-
+	public function __get($name)
+	{
+		$result = null;
+		if (array_key_exists($name, $_SESSION)) {
+			$result = $_SESSION[$name];
+		}
+		return $result;
 	}
 
-	public function addFlash($type, $message){
+	public function addFlush($type, $message)
+	{
 		$_SESSION['messages'][$type][] = $message;
+//		$this->messages[$type][] = $message;
+	}
+
+	public function getFlush()
+	{
+		$messages = $_SESSION['messages'];
+		$_SESSION['messages'] = array();
+//		$this->messages = array();
+		return $messages;
 	}
 } 

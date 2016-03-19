@@ -2,6 +2,9 @@
 
 namespace Framework\Model;
 
+use Framework\DI\Service;
+use PDO;
+
 
 abstract class ActiveRecord {
 
@@ -29,8 +32,9 @@ abstract class ActiveRecord {
 
 	public abstract function getTable();
 
-	public static function find($mode = 'all'){
-
+	public static function find($mode = 'all')
+	{
+		 $db    = self::getDBCon();
 		 $table = static::getTable();
 
 		 $sql = "SELECT * FROM " . $table;
@@ -39,8 +43,11 @@ abstract class ActiveRecord {
 			 $sql .= " WHERE id=".(int)$mode;
 		 }
 
+		$statement = $db->prepare($sql);
+		$result = $statement->execute();
 		 // PDO request...
 
+//		var_dump($result); die;
 		 return $result;
 	}
 

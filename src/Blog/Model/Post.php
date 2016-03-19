@@ -18,7 +18,7 @@ class Post extends ActiveRecord
     public $content;
     public $date;
 
-    public static function getTable()
+    public function getTable()
     {
         return 'posts';
     }

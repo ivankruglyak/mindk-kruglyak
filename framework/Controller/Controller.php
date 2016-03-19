@@ -2,6 +2,7 @@
 
 namespace Framework\Controller;
 
+use Framework\DI\Service;
 use Framework\Response\Response;
 
 /**
@@ -22,13 +23,18 @@ abstract class Controller {
 	 */
 	public function render($layout, $data = array()){
 
-		// @TODO: Find a way to build full path to layout file
-		$fullpath = realpath('...' . $layout);
+		$view_folder = str_replace('Controller', '', get_class($this));
+		$fullpath = realpath('../views/' . $view_folder . $layout);
 
-		$renderer = new Renderer('...'); // Try to define renderer like a service. e.g.: Service::get('renderer');
+		$renderer = Service::get('renderer');
 
 		$content = $renderer->render($fullpath, $data);
 
 		return new Response($content);
+	}
+
+	public function getRequest()
+	{
+		return Service::get('request');
 	}
 } 
