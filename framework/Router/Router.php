@@ -21,11 +21,13 @@ class Router{
 	}
 
 	/**
-	 * Parse URL
-	 *
-	 * @param $url
-	 */
-	public function parseRoute($url = ''){
+     * Parse URL
+     *
+     * @param string $url
+     * @return null
+     */
+	public function parseRoute($url = '')
+	{
 
 		$url = empty($url) ? $_SERVER['REQUEST_URI'] : $url;
 
@@ -50,12 +52,22 @@ class Router{
 			}
 
 		}
-
 		return $route_found;
 	}
 
-	public function buildRoute($route_name, $params = array()){
-		// @TODO: Your code...
+	public function buildRoute($route_name, $params = array())
+    {
+        if (!isset(self::$map[$route_name])) {
+            throw new \Exception('No route');
+        }
+        $result = self::$map[$route_name]['pattern'];
+        foreach ($params as $key => $value) {
+            $result = str_replace('{' . $key . '}', $value, $result);
+        }
+        if (strpos($result, '{') !== false || strpos($result, '}') !== false) {
+            throw new \Exception('There are not enough parameters');
+        }
+		return $result;
 	}
 
 	private function prepare($route){

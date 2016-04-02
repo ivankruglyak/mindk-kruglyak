@@ -18,7 +18,8 @@ namespace Framework\Exception;
 
 
 class HttpNotFoundException extends \Exception{
-
-
-
+    public function __construct($message = "", \Exception $previous = null)
+    {
+        parent::__construct($message, 404, $previous);
+    }
 } 

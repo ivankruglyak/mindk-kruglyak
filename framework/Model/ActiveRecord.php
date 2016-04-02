@@ -30,7 +30,7 @@ abstract class ActiveRecord {
 		return self::$db;
 	}
 
-	public abstract function getTable();
+	public abstract static function getTable();
 
 	public static function find($mode = 'all')
 	{
@@ -43,11 +43,12 @@ abstract class ActiveRecord {
 			 $sql .= " WHERE id=".(int)$mode;
 		 }
 
-		$statement = $db->prepare($sql);
-		$result = $statement->execute();
-		 // PDO request...
+		 $statement = $db->prepare($sql);
+		 $statement->execute();
+		 $result = ($mode == 'all')
+			 ? $statement->fetchAll(PDO::FETCH_OBJ)
+		 	 : $statement->fetch(PDO::FETCH_OBJ);
 
-//		var_dump($result); die;
 		 return $result;
 	}
 
@@ -70,6 +71,11 @@ abstract class ActiveRecord {
 			}
 		}
 
-		// @TODO: build SQL expression, execute
+		if ($valid) {
+			// @TODO: build SQL expression, execute
+		} else {
+//			@TODO Return error
+		}
+
 	}
 } 

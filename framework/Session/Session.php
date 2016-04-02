@@ -21,15 +21,24 @@ class Session {
 
 	public function __construct(){
 		session_start();
-//		if (!array_key_exists('messages', $_SESSION)) {
-//			$_SESSION['messages'] = array('info'=>array(), 'error'=>array(), 'success'=>array());
-//		}
 	}
 
+	/**
+	 * Setter
+	 *
+	 * @param $name
+	 * @param $val
+	 */
 	public function __set($name, $val){
 		$_SESSION[$name] = $val;
 	}
 
+	/**
+	 * Getter
+	 *
+	 * @param $name
+	 * @return null
+	 */
 	public function __get($name)
 	{
 		$result = null;
@@ -42,14 +51,34 @@ class Session {
 	public function addFlush($type, $message)
 	{
 		$_SESSION['messages'][$type][] = $message;
-//		$this->messages[$type][] = $message;
 	}
 
 	public function getFlush()
 	{
 		$messages = $_SESSION['messages'];
 		$_SESSION['messages'] = array();
-//		$this->messages = array();
 		return $messages;
 	}
+
+	/**
+	 * Set user
+	 *
+	 * @param $user
+	 */
+	public function setUser($user)
+	{
+		$_SESSION['user'] = isset($user) ? $user->id : null;
+	}
+
+	/**
+	 * Unsetter
+	 *
+	 * @param $name
+	 */
+	function __unset($name)
+	{
+		unset($_SESSION[$name]);
+	}
+
+
 } 

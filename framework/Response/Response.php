@@ -21,19 +21,19 @@ class Response {
 
 	protected $headers = array();
 
-	public $code = 200;
+	protected $code = 200;
 	public $content = '';
 	public $type = 'text/html';
 
-	private static $msgs = array(
+	protected static $msgs = array(
 		200 => 'Ok',
 	    404 => 'Not found'
 	);
 
 	public function __construct($content = '', $type = 'text/html', $code = 200){
-		$this->code = $code;
+		$this->code    = $code;
 		$this->content = $content;
-		$this->type = $type;
+		$this->type    = $type;
 		$this->setHeader('Content-Type', $this->type);
 	}
 

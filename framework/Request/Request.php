@@ -44,10 +44,34 @@ class Request {
 
 	public function post($varname = '', $filter = 'STRING'){
 
-		return filter($_POST[$varname], $filter);
+		return $_POST[$varname];
+		//@TODO: Decomment the string below and comment the steing in above after filter realization
+//		return $this->filter($_POST[$varname], $filter);
 	}
 
 	protected function filter($value, $filter = 'STRING'){
-		// @TODO: ...
+        //return false;
+		// @TODO: To Vanya. Finish filtering: clearing input invisible characters,
+		// sanitizing and injection protection
+		$md5_val= md5($value);
+		$md5_inv = $this->random_word(rand(4,8));
+		$filter = strval($md5_val . md5($md5_inv));
+		return $filter;
+	}
+	public function random_word($word_len)
+	{
+		$symbols = "QwertyuiOPASdfgHjklZxCvbNm";
+		$word = '';
+        $i = 0;
+		while ($i < $word_len){
+			$word .= $symbols[mt_rand(0, strlen($symbols)-1)];
+			$i ++;
+		}
+		return $word;
+	}
+
+	public function getUri()
+	{
+		return $_SERVER['REQUEST_URI'];
 	}
 }

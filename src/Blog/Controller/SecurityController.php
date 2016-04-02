@@ -19,8 +19,8 @@ class SecurityController extends Controller
 
     public function loginAction()
     {
-        if (Service::get('security')->isAuthenticated()) {
-            return new ResponseRedirect($this->generateRoute('home'));
+        if ( $isAuthenticated = Service::get('security')->isAuthenticated()) {
+            return new ResponseRedirect($this->buildRoute('home'));
         }
         $errors = array();
 
@@ -31,7 +31,12 @@ class SecurityController extends Controller
                     Service::get('security')->setUser($user);
                     $returnUrl = Service::get('session')->returnUrl;
                     unset(Service::get('session')->returnUrl);
-                    return $this->redirect(!is_null($returnUrl)?$returnUrl:$this->generateRoute('home'));
+                    $response = $this->redirect(
+                        !is_null($returnUrl)
+                            ? $returnUrl
+                            : Service::get('router')->buildRoute('home')
+                    );
+                    return $response;
                 }
             }
 
@@ -44,13 +49,13 @@ class SecurityController extends Controller
     public function logoutAction()
     {
         Service::get('security')->clear();
-        return $this->redirect($this->generateRoute('home'));
+        return $this->redirect(Service::get('router')->buildRoute('login'));
     }
 
     public function signinAction()
     {
         if (Service::get('security')->isAuthenticated()) {
-            return new ResponseRedirect($this->generateRoute('home'));
+            return new ResponseRedirect(Service::get('router')->buildRoute('home'));
         }
         $errors = array();
 

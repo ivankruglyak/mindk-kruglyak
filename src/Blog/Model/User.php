@@ -9,9 +9,9 @@
 namespace Blog\Model;
 
 use Framework\Model\ActiveRecord;
-use Framework\Security\Model\UserInterface;
+use PDO;
 
-class User extends ActiveRecord implements UserInterface
+class User extends ActiveRecord
 {
     public $id;
     public $email;
@@ -26,5 +26,21 @@ class User extends ActiveRecord implements UserInterface
     public function getRole()
     {
         return $this->role;
+    }
+
+    public static function findByEmail($email)
+    {
+        $db    = self::getDBCon();
+        $table = self::getTable();
+
+        $sql = "SELECT * FROM " . $table;
+
+        $sql .= " WHERE email='" . $email . "'";
+
+
+        $statement = $db->prepare($sql);
+        $statement->execute();
+        $result = $statement->fetch(PDO::FETCH_OBJ);
+        return $result;
     }
 }

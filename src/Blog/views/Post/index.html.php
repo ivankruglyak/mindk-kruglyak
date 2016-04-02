@@ -1,5 +1,6 @@
 <div class="col-sm-8 blog-main">
-    <?php foreach ($posts as $post) { ?>
+    <?php
+    foreach ($posts as $post) { ?>
 
         <div class="blog-post">
             <h2 class="blog-post-title"><a href="/posts/<?php echo $post->id ?>"> <?php echo $post->title ?></a></h2>
@@ -13,9 +14,9 @@
 
     <?php } ?>
 
-    <div>
-        <?php $include('Blog\\Controller\\PostController', 'getPost', array('id' => 'TestId')) ?>
-    </div>
+<!--    <div>-->
+<!--        --><?php //$include('Blog\\Controller\\PostController', 'getPost', array('id' => 'TestId')); ?>
+<!--    </div>-->
 
 </div>
 

@@ -2,11 +2,16 @@
 
 namespace Framework\Renderer;
 
+use Framework\DI\Service;
+use Framework\Exception\RendererException;
+
 /**
  * Class Renderer
  * @package Framework\Renderer
  */
 class Renderer {
+
+    protected $data = array();
 
 	/**
 	 * @var string  Main wrapper template file location
@@ -31,29 +36,42 @@ class Renderer {
 	 * @return html/text
 	 */
 	public function renderMain($content){
-
+        $this->assign('content', $content);
 		//@TODO: set all required vars and closures..
-
-		return $this->render($this->main_template, compact('content'), false);
+		return $this->render($this->main_template, false);
 	}
 
-	/**
-	 * Render specified template file with data provided
-	 *
-	 * @param   string  Template file path (full)
-	 * @param   mixed   Data array
-	 * @param   bool    To be wrapped with main template if true
-	 *
-	 * @return  text/html
-	 */
-	public function render($template_path, $data = array(), $wrap = true){
+    /**
+     * Render specified template file with data provided
+     *
+     * @param $template_path
+     * @param bool $wrap
+     * @return html|string
+     * @throws RendererException
+     */
+	public function render($template_path, $wrap = true)
+	{
+		$include = function($controller, $action, $params = array()){
+			$response = Service::get('application')->callControllerAction($controller, $action, $params);
+			echo $response->getContent();
+		};
 
-		extract($data);
-		// @TODO: provide all required vars or closures...
+		$getRoute = function($name) {
+			return Service::get('router')->buildRoute($name);
+		};
 
-		ob_start();
-		include( $template_path );
-		$content = ob_end_clean();
+		$generateToken = function(){
+			echo '<input type="hidden" name="_token" value="' . Service::get('security')->getHash() . '">';
+		};
+
+		if (empty($template_path)) {
+			throw new RendererException('Layout doesn\'t set');
+		}
+        ob_start();
+        extract($this->getData());
+
+		include($template_path);
+		$content = ob_get_clean();
 
 		if($wrap){
 			$content = $this->renderMain($content);
@@ -61,4 +79,27 @@ class Renderer {
 
 		return $content;
 	}
+
+    /**
+     * Assign
+     *
+     * @param $key
+     * @param null $value
+     * @return $this
+     */
+    public function assign($key, $value = null)
+    {
+        if (is_array($key)) {
+            $this->data = array_merge($this->data, $key);
+        } else {
+            $this->data[$key] = $value;
+        }
+
+        return $this;
+    }
+
+    public function getData()
+    {
+        return $this->data;
+    }
 }
